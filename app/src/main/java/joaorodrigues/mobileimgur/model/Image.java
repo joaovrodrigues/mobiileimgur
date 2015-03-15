@@ -1,6 +1,11 @@
 package joaorodrigues.mobileimgur.model;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
 public class Image {
+
     private String id;
     private String title;
     private String description;
@@ -17,6 +22,7 @@ public class Image {
     private int ups;
     private int downs;
     private int score;
+    @SerializedName("is_album")
     private boolean isAlbum;
     private boolean favorite;
     private boolean nsfw;
@@ -25,6 +31,15 @@ public class Image {
     private String topic;
     private int topicId;
     private int imagesCount;
+    private List<Image> album;
+
+    public List<Image> getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(List<Image> album) {
+        this.album = album;
+    }
 
     public String getId() {
         return id;
@@ -121,7 +136,6 @@ public class Image {
     public int getImagesCount() {
         return imagesCount;
     }
-
 
     public void setId(String id) {
         this.id = id;

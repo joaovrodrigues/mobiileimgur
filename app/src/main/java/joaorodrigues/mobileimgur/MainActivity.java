@@ -1,59 +1,127 @@
 package joaorodrigues.mobileimgur;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.GridView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
-import java.util.List;
+import com.squareup.otto.Subscribe;
 
-import joaorodrigues.mobileimgur.R;
-import joaorodrigues.mobileimgur.adapter.GridAdapter;
-import joaorodrigues.mobileimgur.connection.ApiManager;
-import joaorodrigues.mobileimgur.interfaces.ImgurApiInterface;
-import joaorodrigues.mobileimgur.model.Image;
-import joaorodrigues.mobileimgur.model.RetrofitResponse;
-import retrofit.Callback;
-import retrofit.RestAdapter;
+import joaorodrigues.mobileimgur.adapter.RecyclerViewAdapter;
+import joaorodrigues.mobileimgur.controller.ImgurController;
+import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
+import joaorodrigues.mobileimgur.views.StableRecyclerView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends BaseActivity
+    implements SeekBar.OnSeekBarChangeListener{
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private ImgurController mImgurController;
+    private StableRecyclerView mGridView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
+        mGridView.setLayoutManager(StableRecyclerView.GRID_LAYOUT);
+
+        mImgurController = (ImgurController) getLastCustomNonConfigurationInstance();
+        if (mImgurController == null) {
+            mImgurController = new ImgurController(getBus());
+            mImgurController.register();
+        }
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mImgurController;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mImgurController.unregister();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        final GridView gridView = (GridView) findViewById(R.id.gv_images);
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("https://api.imgur.com")
-                .build();
+        getBus().register(this);
+        mImgurController.refreshData();
+    }
 
-        ImgurApiInterface service = restAdapter.create(ImgurApiInterface.class);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getBus().unregister(this);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+        return super.onPrepareOptionsPanel(view, menu);
+    }
 
-        Callback<RetrofitResponse> callback = new Callback<RetrofitResponse>() {
-            @Override
-            public void success(RetrofitResponse retrofitResponse, Response response) {
-                List<Image> images = retrofitResponse.getData();
-                GridAdapter adapter = new GridAdapter(MainActivity.this, images);
-                gridView.setAdapter(adapter);
-            }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e("tag", error.getMessage());
-            }
-        };
+        switch (item.getItemId()) {
+            case (R.id.btn_popupwindow):
+                PopupWindow popupWindow = new PopupWindow(
+                        getLayoutInflater().inflate(R.layout.dialog_popup, null, false),
+                        , 100, false);
 
-        service.listImages(callback);
+                View view = findViewById(item.getItemId());
+                popupWindow.showAsDropDown(view, -200, 0);
+
+                SeekBar scale = (SeekBar)popupWindow.getContentView().findViewById(R.id.sb_scale);
+                scale.setOnSeekBarChangeListener(this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void onImageListReceived(DatasetUpdateEvent event) {
+        if (event.getData() != null) {
+            mGridView.setAdapter(new RecyclerViewAdapter(event.getData()));
+        }
+    }
+
+    @Subscribe
+    public void onRetrofitError(RetrofitError error) {
+        Toast.makeText(this, "Error Loading images!\n" +
+                error.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Log.e("seekbar", progress + "");
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
 }
