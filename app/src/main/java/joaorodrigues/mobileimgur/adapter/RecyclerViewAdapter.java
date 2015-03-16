@@ -24,6 +24,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder>{
 
     private List<Image> mImageList;
     private int mLayoutType;
+    private double mScale;
 
     public RecyclerViewAdapter(List<Image> imageList) {
         this.mImageList = imageList;
@@ -31,7 +32,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder>{
 
     public void setLayoutType(int layoutType) {
         this.mLayoutType = layoutType;
+    }
 
+    public void setScale(double scale) {
+        this.mScale = scale;
     }
 
     @Override
@@ -39,7 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder>{
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.listitem_image, viewGroup, false);
 
-        return  new CardViewHolder(view, 1, mLayoutType);
+        return  new CardViewHolder(view, mScale, mLayoutType, viewGroup);
     }
 
     @Override

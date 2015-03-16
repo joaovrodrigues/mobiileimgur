@@ -29,7 +29,6 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_mobileimgur</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mobileimgur</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mobileimgur</item>
-        
                 <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Mobileimgur.Widget</item>
 
@@ -40,6 +39,7 @@
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mobileimgur</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mobileimgur</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Mobileimgur</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 
     <style name="ActionBar.Transparent.Mobileimgur" parent="@android:style/Widget.Holo.ActionBar">

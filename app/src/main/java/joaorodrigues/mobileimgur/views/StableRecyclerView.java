@@ -4,7 +4,12 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
+import joaorodrigues.mobileimgur.R;
 import joaorodrigues.mobileimgur.adapter.RecyclerViewAdapter;
 
 /**
@@ -32,6 +37,7 @@ public class StableRecyclerView extends RecyclerView {
 
     public void setScale(double scale) {
         this.mScale = scale;
+        setLayoutManager(mLayoutType);
     }
 
     public double getScale() {
@@ -42,7 +48,7 @@ public class StableRecyclerView extends RecyclerView {
         this.mLayoutType = layoutManagerCode;
         switch (layoutManagerCode) {
             case (GRID_LAYOUT):
-                GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+                GridLayoutManager layoutManager = new GridLayoutManager(getContext(), getRows());
                 setLayoutManager(layoutManager);
                 break;
             case (STAGGERED_LAYOUT):
@@ -50,6 +56,10 @@ public class StableRecyclerView extends RecyclerView {
                 setLayoutManager(stagLayoutManager);
                 break;
         }
+    }
+
+    public int getRows() {
+        return (int)(1/mScale) < 5 ? (int)(1/mScale):5;
     }
 
     public int getLayoutType() {
