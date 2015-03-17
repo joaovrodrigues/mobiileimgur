@@ -11,8 +11,8 @@ public class Image {
     private String description;
     private long datetime;
     private String cover;
-    private String coverWidth;
-    private String coverHeight;
+    private int width;
+    private int height;
     private String accountUrl;
     private int accountId;
     private String privacy;
@@ -31,7 +31,12 @@ public class Image {
     private String topic;
     private int topicId;
     private int imagesCount;
+    @SerializedName("cover_width")
+    private int coverWidth;
+    @SerializedName("cover_height")
+    private int coverHeight;
     private List<Image> album;
+
 
     public List<Image> getAlbum() {
         return album;
@@ -61,12 +66,12 @@ public class Image {
         return cover;
     }
 
-    public String getCoverWidth() {
-        return coverWidth;
+    public int getWidth() {
+        return width;
     }
 
-    public String getCoverHeight() {
-        return coverHeight;
+    public int getHeight() {
+        return height;
     }
 
     public String getAccountUrl() {
@@ -137,6 +142,22 @@ public class Image {
         return imagesCount;
     }
 
+    public int getCoverHeigth() {
+        return coverHeight;
+    }
+
+    public int getCoverWidth() {
+        return coverWidth;
+    }
+
+    public void setCoverWidth(int coverWidth) {
+        this.coverWidth = coverWidth;
+    }
+
+    public void setCoverHeigth(int coverHeight) {
+        this.coverHeight = coverHeight;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -157,12 +178,12 @@ public class Image {
         this.cover = cover;
     }
 
-    public void setCoverWidth(String coverWidth) {
-        this.coverWidth = coverWidth;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
-    public void setCoverHeight(String coverHeight) {
-        this.coverHeight = coverHeight;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public void setAccountUrl(String accountUrl) {

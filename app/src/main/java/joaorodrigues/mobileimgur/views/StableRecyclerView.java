@@ -4,13 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-
-import joaorodrigues.mobileimgur.R;
-import joaorodrigues.mobileimgur.adapter.RecyclerViewAdapter;
 
 /**
  * Stable recycler view that will not throw error on stop scroll
@@ -52,7 +45,8 @@ public class StableRecyclerView extends RecyclerView {
                 setLayoutManager(layoutManager);
                 break;
             case (STAGGERED_LAYOUT):
-                StaggeredGridLayoutManager stagLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                StaggeredGridLayoutManager stagLayoutManager =
+                        new StaggeredGridLayoutManager(getRows(), StaggeredGridLayoutManager.VERTICAL);
                 setLayoutManager(stagLayoutManager);
                 break;
         }

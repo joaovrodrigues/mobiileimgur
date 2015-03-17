@@ -30,7 +30,6 @@ public class RecyclerViewOnScrollListener extends RecyclerView.OnScrollListener 
         super.onScrolled(recyclerView, dx, dy);
         final ActionBar actionBar = mMainActivity.getActionBar();
         mYstart += dy;
-        Log.e("variable", mYstart+"");
         /*if(Build.VERSION.SDK_INT > 20)
         if(dy > 0 && mMainActivity.getActionBar().getHideOffset()<actionBar.getHeight()) {
             mMainActivity.getActionBar().setHideOffset(dy);

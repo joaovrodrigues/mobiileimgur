@@ -1,5 +1,6 @@
 package joaorodrigues.mobileimgur;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,23 +14,31 @@ import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
-import joaorodrigues.mobileimgur.adapter.RecyclerViewAdapter;
+import java.util.List;
+
+import joaorodrigues.mobileimgur.adapter.AbstractAdapter;
+import joaorodrigues.mobileimgur.adapter.GridRecyclerAdapter;
+import joaorodrigues.mobileimgur.adapter.StaggeredRecyclerAdapter;
 import joaorodrigues.mobileimgur.controller.ImgurController;
 import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
+import joaorodrigues.mobileimgur.model.Image;
+import joaorodrigues.mobileimgur.views.DropdownWindow;
 import joaorodrigues.mobileimgur.views.RecyclerViewOnScrollListener;
 import joaorodrigues.mobileimgur.views.StableRecyclerView;
 import retrofit.RetrofitError;
 
 
 public class MainActivity extends BaseActivity
-    implements SeekBar.OnSeekBarChangeListener{
+    implements DropdownWindow.OnProgressChangedListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private ImgurController mImgurController;
     private StableRecyclerView mGridView;
-    private RecyclerViewAdapter mAdapter;
+    private AbstractAdapter mAdapter;
+    private DropdownWindow mDropdownWindow;
     private double mScale;
+    private int mLayoutType;
 
 
     @Override
@@ -38,9 +47,11 @@ public class MainActivity extends BaseActivity
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         this.mScale = 1;
+        this.mLayoutType = StableRecyclerView.GRID_LAYOUT;
         mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
-        mGridView.setLayoutManager(StableRecyclerView.GRID_LAYOUT);
+        mGridView.setLayoutManager(mLayoutType);
         mGridView.setOnScrollListener(new RecyclerViewOnScrollListener(this));
+        mGridView.setHasFixedSize(false);
         mGridView.setScale(mScale);
 
         mImgurController = (ImgurController) getLastCustomNonConfigurationInstance();
@@ -59,6 +70,7 @@ public class MainActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         mImgurController.unregister();
+        mDropdownWindow.dismiss();
     }
 
     @Override
@@ -90,28 +102,19 @@ public class MainActivity extends BaseActivity
 
         switch (item.getItemId()) {
             case (R.id.btn_popupwindow):
-                int width = getWindow().getAttributes().width;
-                final PopupWindow popupWindow = new PopupWindow(
-                        getLayoutInflater().inflate(R.layout.dialog_popup, null, false),
-                        width, 200, false);
-
-                View view = findViewById(item.getItemId());
-                popupWindow.showAsDropDown(view, -200, 0);
-
-                SeekBar scale = (SeekBar)popupWindow.
-                        getContentView().findViewById(R.id.sb_scale);
-
-                scale.setProgress((int)(mScale*100));
-                scale.setOnSeekBarChangeListener(this);
-
-                Button button = (Button) popupWindow.
-                        getContentView().findViewById(R.id.btn_dismiss);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        popupWindow.dismiss();
-                    }
-                });
+                if(mDropdownWindow == null) {
+                    Log.e("starting dropdown window", "starting tit");
+                    mDropdownWindow = new DropdownWindow(this,
+                            findViewById(item.getItemId()), (int) (mScale * 100d));
+                    mDropdownWindow.setOnProgressChangedListener(this);
+                    return true;
+                }
+                Log.e("here", "about to dismiss it");
+                if(mDropdownWindow.isShowing()){
+                    mDropdownWindow.dismiss();
+                }else {
+                    mDropdownWindow.showAsDropDown(findViewById(item.getItemId()));
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -120,9 +123,13 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onImageListReceived(DatasetUpdateEvent event) {
         if (event.getData() != null) {
-            mAdapter = new RecyclerViewAdapter(event.getData());
-            mAdapter.setScale(mScale);
-            mGridView.setAdapter(mAdapter);
+            if (mAdapter == null) {
+                mAdapter = getAdapter(event.getData());
+                mAdapter.setScale(mScale);
+                mGridView.setAdapter(mAdapter);
+            } else {
+                mAdapter.changeData(event.getData());
+            }
         }
     }
 
@@ -133,7 +140,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    public void onProgressChanged(int progress) {
         Log.e("seekbar", progress + "");
         this.mScale = progress > 19 ? progress/100d : mScale;
         mGridView.setScale(mScale);
@@ -142,13 +149,12 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
+    private AbstractAdapter getAdapter(List<Image> data) {
+        Log.e("getting adapter", "adapter");
+        if (mLayoutType == StableRecyclerView.GRID_LAYOUT) {
+            return new GridRecyclerAdapter(data);
+        } else {
+            return new StaggeredRecyclerAdapter(data);
+        }
     }
 }
