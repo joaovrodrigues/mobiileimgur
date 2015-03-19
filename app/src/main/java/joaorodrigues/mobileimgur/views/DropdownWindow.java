@@ -25,8 +25,14 @@ public class DropdownWindow extends PopupWindow
         SeekBar.OnSeekBarChangeListener{
 
     private SeekBar mSeekBar;
-    private int mProgress;
     private OnProgressChangedListener mListener;
+    private DropdownViewHolder mViewHolder;
+
+    private String mSort;
+    private String mSection;
+    private String mWindow;
+    private boolean mShowViral;
+    private int mProgress;
 
     /**
      * @param context context;
@@ -47,20 +53,13 @@ public class DropdownWindow extends PopupWindow
         display.getSize(size);
 
         setWidth(size.x);
-        setHeight(size.y/5);
+        setHeight(size.y/4);
 
         //we dont need a parent as we are manually setting the params.
         setContentView(LayoutInflater.from(context).inflate(R.layout.dialog_popup, null));
 
         this.mProgress = progress;
-
-
-
-        /*setWidth(width);
-        setHeight(height/5);
-        setFocusable(false);*/
-        showAsDropDown(anchor, -200, 0);
-        //update(width, height);
+        showAsDropDown(anchor, 0, 0);
 
         Button close = (Button) getContentView().findViewById(R.id.btn_dismiss);
         close.setOnClickListener(this);
@@ -68,6 +67,7 @@ public class DropdownWindow extends PopupWindow
         mSeekBar.setProgress(mProgress);
         mSeekBar.setOnSeekBarChangeListener(this);
 
+        this.mViewHolder = new DropdownViewHolder();
     }
 
     public void setOnProgressChangedListener(OnProgressChangedListener listener) {
@@ -100,9 +100,73 @@ public class DropdownWindow extends PopupWindow
 
     }
 
+    public String getSort() {
+        return mSort;
+    }
+
+    public void setSort(String sort) {
+        mSort = sort;
+        this.mViewHolder.mSortButton.setText(mSort);
+    }
+
+    public String getSection() {
+        return mSection;
+    }
+
+    public void setSection(String section) {
+        mSection = section;
+        this.mViewHolder.mSectionButton.setText(mSection);
+    }
+
+    public String getWindow() {
+        return mWindow;
+
+    }
+
+    public void setWindow(String window) {
+        mWindow = window;
+        this.mViewHolder.mWindowButton.setText(mWindow);
+    }
+
+    public boolean isShowViral() {
+        return mShowViral;
+    }
+
+    public void setShowViral(boolean showViral) {
+        mShowViral = showViral;
+    }
+
     public interface OnProgressChangedListener{
         public void onProgressChanged(int progress);
     }
 
+    public interface OnApiChangedListener{
+        public void onSectionChangedListener(String section);
 
+        public void onSortChangedListener(String sort);
+
+        public void onWindowChangedListener(String window);
+
+        public void onViralChangedListener(boolean showViral);
+    }
+
+    public class DropdownViewHolder{
+
+        private Button mSortButton;
+        private Button mSectionButton;
+        private Button mWindowButton;
+
+        DropdownViewHolder() {
+            mSortButton = (Button) getContentView().findViewById(R.id.btn_sort);
+            mSectionButton = (Button) getContentView().findViewById(R.id.btn_section);
+            mWindowButton = (Button) getContentView().findViewById(R.id.btn_window);
+        }
+
+        protected void setClickListener(View.OnClickListener listener) {
+            this.mWindowButton.setOnClickListener(listener);
+            this.mSectionButton.setOnClickListener(listener);
+            this.mSortButton.setOnClickListener(listener);
+        }
+
+    }
 }

@@ -29,7 +29,8 @@ import retrofit.RetrofitError;
 
 
 public class MainActivity extends BaseActivity
-    implements DropdownWindow.OnProgressChangedListener{
+    implements DropdownWindow.OnProgressChangedListener,
+    DropdownWindow.OnApiChangedListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -106,10 +107,12 @@ public class MainActivity extends BaseActivity
         switch (item.getItemId()) {
             case (R.id.btn_popupwindow):
                 if(mDropdownWindow == null) {
-                    Log.e("starting dropdown window", "starting tit");
                     mDropdownWindow = new DropdownWindow(this,
                             findViewById(item.getItemId()), (int) (mScale * 100d));
                     mDropdownWindow.setOnProgressChangedListener(this);
+                    mDropdownWindow.setWindow(mImgurController.getWindow());
+                    mDropdownWindow.setSort(mImgurController.getSort());
+                    mDropdownWindow.setSection(mImgurController.getSection());
                     return true;
                 }
                 Log.e("here", "about to dismiss it");
@@ -150,6 +153,26 @@ public class MainActivity extends BaseActivity
         if (mAdapter != null) {
             mAdapter.setScale(mScale);
         }
+    }
+
+    @Override
+    public void onSectionChangedListener(String section) {
+        mImgurController.setSection(section);
+    }
+
+    @Override
+    public void onSortChangedListener(String sort) {
+        mImgurController.setSort(sort);
+    }
+
+    @Override
+    public void onWindowChangedListener(String window) {
+        mImgurController.setWindow(window);
+    }
+
+    @Override
+    public void onViralChangedListener(boolean showViral) {
+        mImgurController.setShowViral(showViral);
     }
 
     private AbstractAdapter getAdapter(List<Image> data) {

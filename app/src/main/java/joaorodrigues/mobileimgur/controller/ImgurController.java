@@ -45,12 +45,35 @@ public class ImgurController {
         this.mCurrentImages = new ArrayList<>();
         this.mBus = bus;
         this.mApiManager = new ApiManager();
+
+        //sets the default api callbacks
         this.mSection = ApiManager.SECTION_HOT;
         this.mSort = ApiManager.SORT_VIRAL;
         this.mWindow = ApiManager.WINDOW_DAY;
         this.mShowViral = true;
         this.mPage = 0;
     }
+
+    public String getSection() {
+        return mSection;
+    }
+
+    public String getSort() {
+        return mSort;
+    }
+
+    public String getWindow() {
+        return mWindow;
+    }
+
+    public boolean isShowViral() {
+        return mShowViral;
+    }
+
+    public int getPage() {
+        return mPage;
+    }
+
 
     public void setSection(String section) {
         this.mSection = section;
