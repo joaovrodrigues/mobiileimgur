@@ -48,6 +48,8 @@ public class DropdownWindow extends PopupWindow
 
         setWidth(size.x);
         setHeight(size.y/5);
+
+        //we dont need a parent as we are manually setting the params.
         setContentView(LayoutInflater.from(context).inflate(R.layout.dialog_popup, null));
 
         this.mProgress = progress;

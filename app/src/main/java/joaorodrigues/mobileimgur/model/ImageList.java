@@ -10,7 +10,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
- * Created by joao on 13-03-2015.
+ * ImageList class to deserialize the image array of the
+ * imgur api gallery object
  */
 public class ImageList extends ArrayList<Image> {
     private ImageList(int capacity) {

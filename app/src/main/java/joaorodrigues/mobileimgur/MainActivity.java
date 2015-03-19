@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         mImgurController.unregister();
-        mDropdownWindow.dismiss();
+
     }
 
     @Override
@@ -84,6 +84,9 @@ public class MainActivity extends BaseActivity
     protected void onPause() {
         super.onPause();
         getBus().unregister(this);
+
+        if(mDropdownWindow != null)
+            mDropdownWindow.dismiss();
     }
 
     @Override

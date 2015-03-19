@@ -6,13 +6,33 @@
     android:layout_height="match_parent"
     android:background="@color/green_transparent">
 
+    <Button
+        android:id="@+id/btn_section"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textColor="@null"/>
 
+    <Button
+        android:id="@+id/btn_order"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@+id/btn_section"
+        android:layout_centerHorizontal="true"
+        android:textColor="@null"/>
+
+    <Button
+        android:id="@+id/btn_window"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@+id/btn_order"
+        android:textColor="@null"/>
 
     <SeekBar
         android:id="@+id/sb_scale"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_dismiss"
+        android:layout_below ="@+id/btn_order"
         android:max="100"/>
 
     <Button
