@@ -1,4 +1,4 @@
-package joaorodrigues.mobileimgur;
+package joaorodrigues.mobileimgur.util;
 
 /**
  * Utils class.
