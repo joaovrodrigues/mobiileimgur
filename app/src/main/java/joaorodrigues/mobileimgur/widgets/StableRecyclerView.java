@@ -1,4 +1,4 @@
-package joaorodrigues.mobileimgur.views;
+package joaorodrigues.mobileimgur.widgets;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;

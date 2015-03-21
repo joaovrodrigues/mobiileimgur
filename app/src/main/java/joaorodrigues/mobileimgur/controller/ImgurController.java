@@ -23,6 +23,9 @@ import joaorodrigues.mobileimgur.model.ImageList;
  * This class is in charge of receiving and parsing the api received data
  * and calling the api when appropriate.
  *
+ * Stores a global hashmap with the image/album id and a list with the
+ * correct order received by the API to avoid requesting albums already received
+ *
  */
 public class ImgurController {
 
@@ -47,10 +50,13 @@ public class ImgurController {
         this.mApiManager = new ApiManager();
 
         //sets the default api callbacks
-        this.mSection = ApiManager.SECTION_HOT;
-        this.mSort = ApiManager.SORT_VIRAL;
-        this.mWindow = ApiManager.WINDOW_DAY;
-        this.mShowViral = true;
+        this.mSection = ImgurPreferencesController.getApiSection() != null ?
+                ImgurPreferencesController.getApiSection() : ApiManager.SECTION_HOT;
+        this.mSort = ImgurPreferencesController.getApiSort() != null ?
+                ImgurPreferencesController.getApiSort() : ApiManager.SORT_VIRAL;
+        this.mWindow = ImgurPreferencesController.getApiWindow() != null ?
+                ImgurPreferencesController.getApiWindow() : ApiManager.WINDOW_DAY;
+        this.mShowViral = ImgurPreferencesController.getApiViral();
         this.mPage = 0;
     }
 
@@ -77,21 +83,25 @@ public class ImgurController {
 
     public void setSection(String section) {
         this.mSection = section;
+        ImgurPreferencesController.storeSection(section);
         refreshData();
     }
 
     public void setSort(String sort) {
         this.mSort = sort;
+        ImgurPreferencesController.storeSort(sort);
         refreshData();
     }
 
     public void setWindow(String window) {
         this.mWindow = window;
+        ImgurPreferencesController.storeWindow(window);
         refreshData();
     }
 
     public void setShowViral(boolean showViral) {
         this.mShowViral = showViral;
+        ImgurPreferencesController.storeViral(showViral);
         refreshData();
     }
 

@@ -1,43 +1,43 @@
 package joaorodrigues.mobileimgur;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.SeekBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import joaorodrigues.mobileimgur.adapter.AbstractAdapter;
+import joaorodrigues.mobileimgur.adapter.AbstractRecyclerAdapter;
 import joaorodrigues.mobileimgur.adapter.GridRecyclerAdapter;
 import joaorodrigues.mobileimgur.adapter.StaggeredRecyclerAdapter;
 import joaorodrigues.mobileimgur.controller.ImgurController;
 import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
 import joaorodrigues.mobileimgur.model.Image;
-import joaorodrigues.mobileimgur.views.DropdownWindow;
-import joaorodrigues.mobileimgur.views.RecyclerViewOnScrollListener;
-import joaorodrigues.mobileimgur.views.StableRecyclerView;
+import joaorodrigues.mobileimgur.widgets.DropdownWindow;
+import joaorodrigues.mobileimgur.widgets.RecyclerViewOnScrollListener;
+import joaorodrigues.mobileimgur.widgets.StableRecyclerView;
 import retrofit.RetrofitError;
 
 
 public class MainActivity extends BaseActivity
     implements DropdownWindow.OnProgressChangedListener,
-    DropdownWindow.OnApiChangedListener{
+    DropdownWindow.OnApiChangedListener, GridRecyclerAdapter.OnGridItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private ImgurController mImgurController;
     private StableRecyclerView mGridView;
-    private AbstractAdapter mAdapter;
+    private AbstractRecyclerAdapter mAdapter;
     private DropdownWindow mDropdownWindow;
+
     private double mScale;
     private int mLayoutType;
 
@@ -45,10 +45,14 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
+
         this.mScale = 1;
         this.mLayoutType = StableRecyclerView.GRID_LAYOUT;
+
         mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
         mGridView.setLayoutManager(mLayoutType);
         mGridView.setOnScrollListener(new RecyclerViewOnScrollListener(this));
@@ -78,6 +82,12 @@ public class MainActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         getBus().register(this);
+
+        mDropdownWindow = new DropdownWindow((RelativeLayout) findViewById(R.id.rl_selectors),
+                (int)(mScale * 100d));
+        mDropdownWindow.setOnProgressChangedListener(this);
+        mDropdownWindow.setOnApiChangedListener(this);
+
         mImgurController.refreshData();
     }
 
@@ -106,21 +116,16 @@ public class MainActivity extends BaseActivity
 
         switch (item.getItemId()) {
             case (R.id.btn_popupwindow):
-                if(mDropdownWindow == null) {
-                    mDropdownWindow = new DropdownWindow(this,
-                            findViewById(item.getItemId()), (int) (mScale * 100d));
-                    mDropdownWindow.setOnProgressChangedListener(this);
+
+                if (mDropdownWindow.isShowing()) {
+                    mDropdownWindow.dismiss();
+                }else{
+                    mDropdownWindow.show();
                     mDropdownWindow.setWindow(mImgurController.getWindow());
                     mDropdownWindow.setSort(mImgurController.getSort());
                     mDropdownWindow.setSection(mImgurController.getSection());
-                    return true;
                 }
-                Log.e("here", "about to dismiss it");
-                if(mDropdownWindow.isShowing()){
-                    mDropdownWindow.dismiss();
-                }else {
-                    mDropdownWindow.showAsDropDown(findViewById(item.getItemId()));
-                }
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -156,29 +161,50 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onSectionChangedListener(String section) {
+    public void onSectionChanged(String section) {
         mImgurController.setSection(section);
     }
 
     @Override
-    public void onSortChangedListener(String sort) {
+    public void onSortChanged(String sort) {
         mImgurController.setSort(sort);
     }
 
     @Override
-    public void onWindowChangedListener(String window) {
+    public void onWindowChanged(String window) {
         mImgurController.setWindow(window);
     }
 
     @Override
-    public void onViralChangedListener(boolean showViral) {
+    public void onViralChanged(boolean showViral) {
         mImgurController.setShowViral(showViral);
     }
 
-    private AbstractAdapter getAdapter(List<Image> data) {
+    @Override
+    public void onGridItemClicked(int position) {
+        Intent intent = new Intent(this, ViewActivity.class);
+        intent.putExtra("position", position);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            mGridView.smoothScrollBy(0, 100);
+            return true;
+        }else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            mGridView.smoothScrollBy(0, -100);
+            return true;
+        }
+        return false;
+    }
+
+    private AbstractRecyclerAdapter getAdapter(List<Image> data) {
         Log.e("getting adapter", "adapter");
         if (mLayoutType == StableRecyclerView.GRID_LAYOUT) {
-            return new GridRecyclerAdapter(data);
+            final GridRecyclerAdapter adapter =  new GridRecyclerAdapter(data);
+            adapter.setOnItemClickListener(this);
+            return adapter;
         } else {
             return new StaggeredRecyclerAdapter(data);
         }

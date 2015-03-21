@@ -21,7 +21,7 @@ public interface ApiImgur {
                     @Query("showViral") String showViral,
                     ImageListCallback callback);
 
-    @GET("3/gallery/top/{sort}/{window}/{page}.json")
+    @GET("/3/gallery/top/{sort}/{window}/{page}.json")
     void listTopImages(@Path("sort") String sort,
                        @Path("window") String window,
                        @Path("page") String page,

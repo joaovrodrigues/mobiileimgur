@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,9 +20,11 @@ import joaorodrigues.mobileimgur.model.Image;
 /**
  * Recycler View Adapter
  */
-public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.CardViewHolder> {
+public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAdapter.CardViewHolder> {
 
     private List<Image> mImageList;
+    private OnGridItemClickListener mListener;
+
     private double mScale;
 
     public GridRecyclerAdapter(List<Image> imageList) {
@@ -48,10 +51,10 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
     }
 
     @Override
-    public void onBindViewHolder(CardViewHolder cardViewHolder, int i) {
+    public void onBindViewHolder(CardViewHolder cardViewHolder, final int i) {
 
         Image image = mImageList.get(i);
-        Context context = cardViewHolder.getImageView().getContext();
+        final Context context = cardViewHolder.getImageView().getContext();
 
         cardViewHolder.getTextView().setText(image.getTitle());
 
@@ -63,18 +66,28 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
                 return;
         }
 
-        Picasso picasso = Picasso.with(context);
-
-        picasso.setIndicatorsEnabled(true);
-        picasso.load(image.getLink())
-                .resize(300, 300)
+        Glide.with(context).load(image.getLink())
+                .override(300, 300)
                 .centerCrop()
                 .into(cardViewHolder.getImageView());
+
+        cardViewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onGridItemClicked(i);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mImageList.size();
+    }
+
+    public void setOnItemClickListener(OnGridItemClickListener listener) {
+        this.mListener = listener;
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
@@ -90,6 +103,7 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
          * Sets and redimensions the views for the scale. If the scale is bigger then so should the
          * views be.
          * if scale == 1 the view
+         *
          * @param scale
          */
         public CardViewHolder(View view, double scale, ViewGroup parent) {
@@ -112,8 +126,8 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
 
         private void scaleViews() {
             ViewGroup.LayoutParams params = mCardView.getLayoutParams();
-            params.height=getScaledHeigth();
-            params.width=getScaledWidth();
+            params.height = getScaledHeigth();
+            params.width = getScaledWidth();
             mCardView.setLayoutParams(params);
 
             params = mImageView.getLayoutParams();
@@ -124,7 +138,7 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
             //TextView visibility when the card gets too small
             if (mScale < 0.45 && mTextView.getVisibility() == View.VISIBLE) {
                 mTextView.setVisibility(View.GONE);
-            }else if (mScale > 0.45 && mTextView.getVisibility() == View.GONE) {
+            } else if (mScale > 0.45 && mTextView.getVisibility() == View.GONE) {
                 mTextView.setVisibility(View.VISIBLE);
             }
 
@@ -137,8 +151,8 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
          * @return
          */
         private int getScaledWidth() {
-            int parentWidth = mParent.getWidth();
-            int scaledWidth = (int) (parentWidth * mScale);
+            final int parentWidth = mParent.getWidth();
+            final int scaledWidth = (int) (parentWidth * mScale);
             return scaledWidth;
         }
 
@@ -149,8 +163,13 @@ public class GridRecyclerAdapter extends AbstractAdapter<GridRecyclerAdapter.Car
          * @return
          */
         private int getScaledHeigth() {
-            return mTextView.getVisibility() == View.VISIBLE ? (int)((double) getScaledWidth() * 1.33333) : getScaledWidth();
+            return mTextView.getVisibility() == View.VISIBLE ? (int) ((double) getScaledWidth() * 1.33333) : getScaledWidth();
         }
+    }
+
+    public interface OnGridItemClickListener {
+
+        public void onGridItemClicked(int position);
 
     }
 }

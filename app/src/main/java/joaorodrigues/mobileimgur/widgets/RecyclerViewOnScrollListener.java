@@ -1,11 +1,8 @@
-package joaorodrigues.mobileimgur.views;
+package joaorodrigues.mobileimgur.widgets;
 
 import android.app.Activity;
-import android.os.Build;
-import android.support.v4.app.FragmentActivity;
 import android.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 /**
  * Created by joao on 15-03-2015.

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import joaorodrigues.mobileimgur.model.Image;
  *
  * Currently not finished.
  */
-public class StaggeredRecyclerAdapter extends AbstractAdapter<StaggeredRecyclerAdapter.ImageViewHolder> {
+public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredRecyclerAdapter.ImageViewHolder> {
 
     private static final int IMAGE_WIDTH = 300;
 
@@ -95,11 +95,9 @@ public class StaggeredRecyclerAdapter extends AbstractAdapter<StaggeredRecyclerA
             height = image.getWidth();
         }
 
-        Picasso picasso = Picasso.with(context);
-        picasso.setIndicatorsEnabled(true);
-        picasso.load(image.getLink())
-                .resize(IMAGE_WIDTH, getCroppedHeight(width, height))
-                .centerInside()
+        Glide.with(context).load(image.getLink())
+                .override(300, 300)
+                .centerCrop()
                 .into(holder.getImageView());
     }
 

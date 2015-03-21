@@ -5,4 +5,24 @@
     <string name="client_id">b165ec613fd601a</string>
     <string name="client_secret">a229fe1249e53c5aea8a2f1adf98d5cd2c3d9811</string>
 
+
+    <array name="section">
+        <item name="hot">HOT</item>
+        <item name="top">TOP</item>
+        <item name="user">USER</item>
+    </array>
+
+    <array name="sort">
+        <item name="viral">VIRAL</item>
+        <item name="top">TOP</item>
+        <item name="time">TIME</item>
+        <item name="rising">RISING</item>
+    </array>
+
+    <array name="window">
+        <item name="day">DAY</item>
+        <item name="week">WEEK</item>
+        <item name="month">MONTH</item>
+        <item name="year">YEAR</item>
+    </array>
 </resources>

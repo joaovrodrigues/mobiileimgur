@@ -48,7 +48,8 @@
     </style>
 
     <style name="PopupMenu.Mobileimgur" parent="@android:style/Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mobileimgur</item>	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mobileimgur</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="DropDownListView.Mobileimgur" parent="@android:style/Widget.Holo.ListView.DropDown">

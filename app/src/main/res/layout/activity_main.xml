@@ -1,11 +1,89 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    tools:context=".MainActivity">
-<joaorodrigues.mobileimgur.views.StableRecyclerView
-    android:id="@+id/rv_images"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".MainActivity">
+
+    <joaorodrigues.mobileimgur.widgets.StableRecyclerView
+        android:id="@+id/rv_images"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rl_selectors"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:translationY="-150dp"
+        android:background="@color/green_transparent">
+
+        <LinearLayout
+            android:id="@+id/ll_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_section"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toLeftOf="@+id/btn_sort"
+                android:background="@null"
+                android:textSize="25sp"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/btn_sort"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:textSize="25sp"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/btn_window"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/btn_sort"
+                android:background="@null"
+                android:textSize="25sp"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sb_scale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_dismiss"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/ll_buttons"
+            android:max="100"/>
+
+        <Button
+            android:id="@+id/btn_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:text="close"
+            android:textColor="@android:color/white"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>
