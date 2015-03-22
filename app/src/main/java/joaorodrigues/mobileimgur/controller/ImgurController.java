@@ -7,12 +7,15 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import joaorodrigues.mobileimgur.MobileImgur;
 import joaorodrigues.mobileimgur.connection.AlbumCallback;
 import joaorodrigues.mobileimgur.connection.ApiManager;
 import joaorodrigues.mobileimgur.connection.ImageListCallback;
 import joaorodrigues.mobileimgur.events.AlbumUpdateEvent;
 import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
 import joaorodrigues.mobileimgur.events.GalleryUpdateEvent;
+import joaorodrigues.mobileimgur.events.PageRequestEvent;
 import joaorodrigues.mobileimgur.model.Album;
 import joaorodrigues.mobileimgur.model.Image;
 import joaorodrigues.mobileimgur.model.ImageList;
@@ -29,6 +32,8 @@ import joaorodrigues.mobileimgur.model.ImageList;
  */
 public class ImgurController {
 
+    private static ImgurController sInstance;
+
     private HashMap<String, Image> mImageMap;
     private List<Image> mCurrentImages;
     private List<String> mAlbumgetList;
@@ -42,12 +47,20 @@ public class ImgurController {
     private boolean mShowViral;
     private int mPage;
 
+    public static ImgurController getInstance() {
+        if (sInstance == null) {
+            sInstance = new ImgurController(MobileImgur.get().getBus());
+        }
 
-    public ImgurController(Bus bus) {
+        return sInstance;
+    }
+
+    private ImgurController(Bus bus) {
         this.mImageMap = new HashMap<>();
         this.mCurrentImages = new ArrayList<>();
         this.mBus = bus;
         this.mApiManager = new ApiManager();
+        this.register();
 
         //sets the default api callbacks
         this.mSection = ImgurPreferencesController.getApiSection() != null ?
@@ -191,6 +204,7 @@ public class ImgurController {
     public DatasetUpdateEvent getData() {
         DatasetUpdateEvent event = new DatasetUpdateEvent();
         event.setData(mCurrentImages);
+        event.setPage(mPage);
         return event;
     }
 
@@ -207,6 +221,11 @@ public class ImgurController {
         getNextAlbum();
         //sends an event to notify the dataset changed
         mBus.post(new DatasetUpdateEvent(mCurrentImages));
+    }
+
+    @Subscribe
+    public void requestPage(PageRequestEvent event) {
+        loadNextPage();
     }
 
     public void loadNextPage() {

@@ -14,7 +14,7 @@ import joaorodrigues.mobileimgur.fragments.ImgurAbstractFragment;
 import joaorodrigues.mobileimgur.model.Image;
 
 /**
- * Created by joao on 21-03-2015.
+ * View pager adapter for scrolling imageView fragments
  */
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="last_pic_page">No more pictures in this page :(</string>
+    <string name="last_pic_page">Loading next page!</string>
     
     <string name="app_name">Mobile Imgur</string>
     <string name="client_id">b165ec613fd601a</string>

@@ -20,16 +20,16 @@ import joaorodrigues.mobileimgur.adapter.GridRecyclerAdapter;
 import joaorodrigues.mobileimgur.adapter.StaggeredRecyclerAdapter;
 import joaorodrigues.mobileimgur.controller.ImgurController;
 import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
+import joaorodrigues.mobileimgur.listeners.RecyclerViewOnScrollListener;
 import joaorodrigues.mobileimgur.model.Image;
 import joaorodrigues.mobileimgur.widgets.DropdownWindow;
-import joaorodrigues.mobileimgur.widgets.RecyclerViewOnScrollListener;
 import joaorodrigues.mobileimgur.widgets.StableRecyclerView;
 import retrofit.RetrofitError;
 
 
 public class MainActivity extends BaseActivity
-    implements DropdownWindow.OnProgressChangedListener,
-    DropdownWindow.OnApiChangedListener, GridRecyclerAdapter.OnGridItemClickListener {
+        implements DropdownWindow.OnProgressChangedListener,
+        DropdownWindow.OnApiChangedListener, GridRecyclerAdapter.OnGridItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -60,23 +60,43 @@ public class MainActivity extends BaseActivity
         mGridView.setHasFixedSize(false);
         mGridView.setScale(mScale);
 
-        mImgurController = (ImgurController) getLastCustomNonConfigurationInstance();
-        if (mImgurController == null) {
-            mImgurController = new ImgurController(getBus());
-            mImgurController.register();
+        /**
+         * Handles configuration change.
+         *
+         * Since we're subclassing FragmentActivity that has the method
+         * onRetainCustomNonConfigurationInstance we can save the adapter
+         * and set it back to our recycler view.
+         */
+        mAdapter = (AbstractRecyclerAdapter) getLastCustomNonConfigurationInstance();
+
+        if (mAdapter != null) {
+            mGridView.setAdapter(mAdapter);
+            if (savedInstanceState != null) {
+                mGridView.scrollToPosition(savedInstanceState.getInt("position"));
+            }
         }
+
+        mImgurController = ImgurController.getInstance();
     }
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return mImgurController;
+        if (mAdapter != null) {
+            return mAdapter;
+        }
+        return null;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mGridView != null)
+            outState.putInt("position", mGridView.getFirstVisiblePosition());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mImgurController.unregister();
-
     }
 
     @Override
@@ -85,7 +105,7 @@ public class MainActivity extends BaseActivity
         getBus().register(this);
 
         mDropdownWindow = new DropdownWindow((RelativeLayout) findViewById(R.id.rl_selectors),
-                (int)(mScale * 100d));
+                (int) (mScale * 100d));
         mDropdownWindow.setOnProgressChangedListener(this);
         mDropdownWindow.setOnApiChangedListener(this);
 
@@ -97,7 +117,7 @@ public class MainActivity extends BaseActivity
         super.onPause();
         getBus().unregister(this);
 
-        if(mDropdownWindow != null)
+        if (mDropdownWindow != null)
             mDropdownWindow.dismiss();
     }
 
@@ -120,16 +140,52 @@ public class MainActivity extends BaseActivity
 
                 if (mDropdownWindow.isShowing()) {
                     mDropdownWindow.dismiss();
-                }else{
+                } else {
                     mDropdownWindow.show();
                     mDropdownWindow.setWindow(mImgurController.getWindow());
                     mDropdownWindow.setSort(mImgurController.getSort());
                     mDropdownWindow.setSection(mImgurController.getSection());
+                    mDropdownWindow.setShowViral(mImgurController.isShowViral());
                 }
 
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            mGridView.smoothScrollBy(0, 100);
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            mGridView.smoothScrollBy(0, -100);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    /**
+     * Receives the result from the view activity
+     * and scrolls the gridview to its position.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            final int position = data.getIntExtra("position", 0);
+
+            if (position > 0) {
+                mGridView.scrollToPosition(position);
+            }
+
+        }
+
     }
 
     @Subscribe
@@ -141,6 +197,10 @@ public class MainActivity extends BaseActivity
                 mGridView.setAdapter(mAdapter);
             } else {
                 mAdapter.changeData(event.getData());
+            }
+
+            if (event.getPage() > 0) {
+                Toast.makeText(this, "Loaded page " + event.getPage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -154,7 +214,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onProgressChanged(int progress) {
         Log.e("seekbar", progress + "");
-        this.mScale = progress > 19 ? progress/100d : mScale;
+        this.mScale = progress > 19 ? progress / 100d : mScale;
         mGridView.setScale(mScale);
         if (mAdapter != null) {
             mAdapter.setScale(mScale);
@@ -181,28 +241,25 @@ public class MainActivity extends BaseActivity
         mImgurController.setShowViral(showViral);
     }
 
+
+    /**
+     * On grid item interface. When the view is closed we want
+     * to receive the position in the dataset the user was last
+     * so we can scroll the recycler view to the apropriate position
+     * So we will use the startActivity for result.
+     *
+     * @param position
+     */
     @Override
     public void onGridItemClicked(int position) {
         Intent intent = new Intent(this, ViewActivity.class);
         intent.putExtra("position", position);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            mGridView.smoothScrollBy(0, 100);
-            return true;
-        }else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            mGridView.smoothScrollBy(0, -100);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+        startActivityForResult(intent, 0);
     }
 
     private AbstractRecyclerAdapter getAdapter(List<Image> data) {
         if (mLayoutType == StableRecyclerView.GRID_LAYOUT) {
-            final GridRecyclerAdapter adapter =  new GridRecyclerAdapter(data);
+            final GridRecyclerAdapter adapter = new GridRecyclerAdapter(data);
             adapter.setOnItemClickListener(this);
             return adapter;
         } else {

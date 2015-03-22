@@ -1,5 +1,6 @@
 package joaorodrigues.mobileimgur;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import joaorodrigues.mobileimgur.adapter.ViewPagerAdapter;
 import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
+import joaorodrigues.mobileimgur.events.PageRequestEvent;
 import joaorodrigues.mobileimgur.model.Image;
 
 /**
@@ -45,8 +47,36 @@ public class ViewActivity extends BaseActivity
             throw new IllegalStateException("position has to be defined");
         }
 
+        /**
+         * In this case we cant save the adapter - which would be optimal -
+         * since it makes use of the SuportFragmentManager which is bound
+         * to the destroyed activity. Hence we will be saving the ImageList
+         * and the position of the mViewPager.
+         */
+        mImageList = (List<Image>) getLastCustomNonConfigurationInstance();
+
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mViewPager.setOnPageChangeListener(this);
+
+        if (mImageList != null) {
+            mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mImageList);
+            mViewPager.setAdapter(mAdapter);
+            if (savedInstanceState != null) {
+                mViewPager.setCurrentItem(savedInstanceState.getInt("position"));
+            }
+        }
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mImageList;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mViewPager != null)
+            outState.putInt("position", mViewPager.getCurrentItem());
     }
 
     @Override
@@ -61,7 +91,19 @@ public class ViewActivity extends BaseActivity
         getBus().unregister(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
+    @Override
+    public void onBackPressed() {
+        final Intent intent = new Intent();
+        intent.putExtra("position", mViewPager.getCurrentItem());
+        setResult(RESULT_OK, intent);
+
+        super.onBackPressed();
+    }
 
     @Subscribe
     public void onDatasetChanged(DatasetUpdateEvent event) {
@@ -91,20 +133,16 @@ public class ViewActivity extends BaseActivity
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
     public void onPageSelected(int position) {
-        Log.e("mImageList", mImageList.size() + " " + position);
         if (mImageList.size() > 0 && mImageList.size() - 1 == position) {
             Toast.makeText(this, R.string.last_pic_page, Toast.LENGTH_LONG).show();
+            getBus().post(new PageRequestEvent());
         }
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {
+    public void onPageScrollStateChanged(int state) { }
 
-    }
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 }

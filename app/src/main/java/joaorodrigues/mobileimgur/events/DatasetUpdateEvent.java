@@ -9,12 +9,21 @@ import joaorodrigues.mobileimgur.model.Image;
  */
 public class DatasetUpdateEvent extends AbstractEvent<List<Image>> {
 
-    public DatasetUpdateEvent() {
+    private int mPage;
 
+    public DatasetUpdateEvent() {
     }
 
     public DatasetUpdateEvent(List<Image> data) {
         super(data);
+    }
+
+    public int getPage() {
+        return mPage;
+    }
+
+    public void setPage(int page) {
+        this.mPage = page;
     }
 
 }

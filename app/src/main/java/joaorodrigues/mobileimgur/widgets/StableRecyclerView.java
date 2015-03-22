@@ -52,6 +52,17 @@ public class StableRecyclerView extends RecyclerView {
         }
     }
 
+    public int getFirstVisiblePosition() {
+        if (getLayoutManager() instanceof GridLayoutManager) {
+            GridLayoutManager manager = (GridLayoutManager)getLayoutManager();
+            return manager.findFirstCompletelyVisibleItemPosition();
+        }else{
+            StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) getLayoutManager();
+            int[] positions = {};
+            return manager.findFirstCompletelyVisibleItemPositions(positions)[0];
+        }
+    }
+
     public int getRows() {
         return (int)(1/mScale) < 5 ? (int)(1/mScale):5;
     }

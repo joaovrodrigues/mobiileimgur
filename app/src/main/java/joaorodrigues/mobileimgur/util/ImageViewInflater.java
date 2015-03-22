@@ -1,5 +1,6 @@
 package joaorodrigues.mobileimgur.util;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +28,17 @@ public class ImageViewInflater {
 
 
     public static View inflateAndSetViews(LayoutInflater inflater, ViewGroup container, Image image) {
+        Log.e("inflating", "inflating the viuew");
         View view = inflater.inflate(R.layout.fragment_image, container, false);
         return setViews(view, image);
     }
 
     public static View setViews(final View view, final Image image) {
 
-        TextView title = (TextView) view.findViewById(R.id.tv_title);
-        TextView description = (TextView) view.findViewById(R.id.tv_description);
-        TextView points = (TextView) view.findViewById(R.id.tv_points);
-        TextView views = (TextView) view.findViewById(R.id.tv_views);
+        final TextView title = (TextView) view.findViewById(R.id.tv_title);
+        final TextView description = (TextView) view.findViewById(R.id.tv_description);
+        final TextView points = (TextView) view.findViewById(R.id.tv_points);
+        final TextView views = (TextView) view.findViewById(R.id.tv_views);
         final ImageView imageView = (ImageView) view.findViewById(R.id.iv_image);
 
         title.setText(image.getTitle());
@@ -56,7 +58,7 @@ public class ImageViewInflater {
         if (image.getViews() != 0) {
             views.setText(Integer.toString(image.getViews()));
         } else {
-            view.setVisibility(View.GONE);
+            views.setVisibility(View.GONE);
         }
 
         if (image.getLink().contains(".gif")) {
