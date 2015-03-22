@@ -1,6 +1,7 @@
 package joaorodrigues.mobileimgur.widgets;
 
 import android.animation.ObjectAnimator;
+import android.graphics.Color;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,12 +13,15 @@ import joaorodrigues.mobileimgur.R;
 
 /**
  * Dropdown window for the main activity.
- *
+ * <p/>
  * Enables scaling of the UI and sets the IMGUR api.
+ * <p/>
+ * This class wraps the relative layout the dropdown window is in
+ * and sets all the controls and necessary interfaces.
  */
 public class DropdownWindow
         implements View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener{
+        SeekBar.OnSeekBarChangeListener {
 
 
     private SeekBar mSeekBar;
@@ -43,7 +47,7 @@ public class DropdownWindow
         }
     };
 
-    private PopupMenu.OnMenuItemClickListener mSortListener = new PopupMenu.OnMenuItemClickListener(){
+    private PopupMenu.OnMenuItemClickListener mSortListener = new PopupMenu.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             setSort(item.getTitle().toString().toLowerCase());
@@ -82,6 +86,7 @@ public class DropdownWindow
 
         this.mViewHolder = new DropdownViewHolder();
         this.mViewHolder.setClickListener(this);
+        this.mViewHolder.mShowViralButton.setText("see viral");
     }
 
 
@@ -92,7 +97,7 @@ public class DropdownWindow
     }
 
     public void dismiss() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mView, "y", mView.getY(), mView.getHeight()*-1);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mView, "y", mView.getY(), mView.getHeight() * -1);
         animator.setDuration(800);
         animator.start();
     }
@@ -116,28 +121,39 @@ public class DropdownWindow
                 dismiss();
                 break;
             case R.id.btn_section:
-                String[] section = mView.getContext().getResources().getStringArray(R.array.section);
-                PopupSelectorMenu sectionMenu = new PopupSelectorMenu(mView.getContext(),
+                final String[] section = mView.getContext().getResources().getStringArray(R.array.section);
+                final PopupSelectorMenu sectionMenu = new PopupSelectorMenu(mView.getContext(),
                         mViewHolder.mSectionButton,
                         section);
                 sectionMenu.setOnMenuItemClickListener(mSectionListener);
                 sectionMenu.show();
                 break;
             case R.id.btn_sort:
-                String[] sort = mView.getContext().getResources().getStringArray(R.array.sort);
-                PopupSelectorMenu sortMenu = new PopupSelectorMenu(mView.getContext(),
+                final String[] sort = mView.getContext().getResources().getStringArray(R.array.sort);
+                final PopupSelectorMenu sortMenu = new PopupSelectorMenu(mView.getContext(),
                         mViewHolder.mSectionButton,
                         sort);
                 sortMenu.setOnMenuItemClickListener(mSortListener);
                 sortMenu.show();
                 break;
             case R.id.btn_window:
-                String[] window = mView.getContext().getResources().getStringArray(R.array.window);
-                PopupSelectorMenu windowMenu = new PopupSelectorMenu(mView.getContext(),
+                final String[] window = mView.getContext().getResources().getStringArray(R.array.window);
+                final PopupSelectorMenu windowMenu = new PopupSelectorMenu(mView.getContext(),
                         mViewHolder.mSectionButton,
                         window);
                 windowMenu.setOnMenuItemClickListener(mWindowListener);
                 windowMenu.show();
+                break;
+            case R.id.btn_showviral:
+                if (mShowViral) {
+                    setShowViral(false);
+                } else {
+                    setShowViral(true);
+                }
+
+                if (mApiChangedListener != null) {
+                    mApiChangedListener.onViralChanged(mShowViral);
+                }
                 break;
         }
     }
@@ -159,18 +175,6 @@ public class DropdownWindow
 
     }
 
-    public String getSort() {
-        return mSort;
-    }
-
-    public String getSection() {
-        return mSection;
-    }
-
-    public String getWindow() {
-        return mWindow;
-    }
-
     public void setSort(String sort) {
         mSort = sort;
         this.mViewHolder.mSortButton.setText(mSort.toUpperCase());
@@ -183,7 +187,7 @@ public class DropdownWindow
 
     public void setWindow(String window) {
         mWindow = window;
-        this.mViewHolder.mWindowButton.setText(mWindow.toUpperCase());
+        this.mViewHolder.mWindowButton.setText( mWindow.toUpperCase());
     }
 
     public boolean isShowViral() {
@@ -191,14 +195,19 @@ public class DropdownWindow
     }
 
     public void setShowViral(boolean showViral) {
-        mShowViral = showViral;
+        this.mShowViral = showViral;
+        if (mShowViral) {
+            this.mViewHolder.mShowViralButton.setTextColor(Color.WHITE);
+        } else {
+            this.mViewHolder.mShowViralButton.setTextColor(Color.GRAY);
+        }
     }
 
-    public interface OnProgressChangedListener{
+    public interface OnProgressChangedListener {
         public void onProgressChanged(int progress);
     }
 
-    public interface OnApiChangedListener{
+    public interface OnApiChangedListener {
         public void onSectionChanged(String section);
 
         public void onSortChanged(String sort);
@@ -208,22 +217,25 @@ public class DropdownWindow
         public void onViralChanged(boolean showViral);
     }
 
-    private class DropdownViewHolder{
+    private class DropdownViewHolder {
 
         private Button mSortButton;
         private Button mSectionButton;
         private Button mWindowButton;
+        private Button mShowViralButton;
 
         DropdownViewHolder() {
-            mSortButton = (Button) mView.findViewById(R.id.btn_sort);
-            mSectionButton = (Button) mView.findViewById(R.id.btn_section);
-            mWindowButton = (Button) mView.findViewById(R.id.btn_window);
+            this.mSortButton = (Button) mView.findViewById(R.id.btn_sort);
+            this.mSectionButton = (Button) mView.findViewById(R.id.btn_section);
+            this.mWindowButton = (Button) mView.findViewById(R.id.btn_window);
+            this.mShowViralButton = (Button) mView.findViewById(R.id.btn_showviral);
         }
 
         protected void setClickListener(View.OnClickListener listener) {
             this.mWindowButton.setOnClickListener(listener);
             this.mSectionButton.setOnClickListener(listener);
             this.mSortButton.setOnClickListener(listener);
+            this.mShowViralButton.setOnClickListener(listener);
         }
 
     }

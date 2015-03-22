@@ -21,6 +21,7 @@ public class AlbumFragment extends ImgurAbstractFragment {
     private Image mAlbumImage;
 
     public static Fragment newInstance(Image image) {
+
         AlbumFragment fragment = new AlbumFragment();
         fragment.setImageAlbum(image);
         fragment.setRetainInstance(true);

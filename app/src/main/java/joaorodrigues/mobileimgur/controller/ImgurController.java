@@ -83,30 +83,29 @@ public class ImgurController {
 
     public void setSection(String section) {
         this.mSection = section;
+        this.mPage = 0;
         ImgurPreferencesController.storeSection(section);
         refreshData();
     }
 
     public void setSort(String sort) {
         this.mSort = sort;
+        this.mPage = 0;
         ImgurPreferencesController.storeSort(sort);
         refreshData();
     }
 
     public void setWindow(String window) {
         this.mWindow = window;
+        this.mPage = 0;
         ImgurPreferencesController.storeWindow(window);
         refreshData();
     }
 
     public void setShowViral(boolean showViral) {
         this.mShowViral = showViral;
+        this.mPage = 0;
         ImgurPreferencesController.storeViral(showViral);
-        refreshData();
-    }
-
-    public void setPage(int page) {
-        this.mPage = page;
         refreshData();
     }
 
@@ -123,7 +122,9 @@ public class ImgurController {
      * @param data
      */
     public void updateImageData(ImageList data) {
-        mCurrentImages.clear();
+        if(mPage == 0)
+            mCurrentImages.clear();
+
         for (Image image : data) {
             if (!image.isAlbum()) {
                 mImageMap.put(image.getId(), image);
@@ -206,6 +207,11 @@ public class ImgurController {
         getNextAlbum();
         //sends an event to notify the dataset changed
         mBus.post(new DatasetUpdateEvent(mCurrentImages));
+    }
+
+    public void loadNextPage() {
+        this.mPage += 1;
+        refreshData();
     }
 
 }

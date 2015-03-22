@@ -54,6 +54,7 @@ public class MainActivity extends BaseActivity
         this.mLayoutType = StableRecyclerView.GRID_LAYOUT;
 
         mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
+        mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
         mGridView.setLayoutManager(mLayoutType);
         mGridView.setOnScrollListener(new RecyclerViewOnScrollListener(this));
         mGridView.setHasFixedSize(false);
@@ -196,11 +197,10 @@ public class MainActivity extends BaseActivity
             mGridView.smoothScrollBy(0, -100);
             return true;
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
     }
 
     private AbstractRecyclerAdapter getAdapter(List<Image> data) {
-        Log.e("getting adapter", "adapter");
         if (mLayoutType == StableRecyclerView.GRID_LAYOUT) {
             final GridRecyclerAdapter adapter =  new GridRecyclerAdapter(data);
             adapter.setOnItemClickListener(this);
@@ -209,4 +209,6 @@ public class MainActivity extends BaseActivity
             return new StaggeredRecyclerAdapter(data);
         }
     }
+
+
 }

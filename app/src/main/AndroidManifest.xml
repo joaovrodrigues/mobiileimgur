@@ -9,6 +9,7 @@
         android:icon="@drawable/ic_launcherpng"
         android:label="@string/app_name"
         android:theme="@style/Theme.Mobileimgur"
+        android:largeHeap="true"
         android:name=".MobileImgur">
 
         <activity

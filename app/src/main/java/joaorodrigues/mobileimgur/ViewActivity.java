@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -19,9 +21,9 @@ import joaorodrigues.mobileimgur.model.Image;
 /**
  * Image display activity
  */
-public class ViewActivity extends BaseActivity {
+public class ViewActivity extends BaseActivity
+    implements ViewPager.OnPageChangeListener{
 
-    private Fragment mFragment;
     private List<Image> mImageList;
     private ViewPagerAdapter mAdapter;
     private ViewPager mViewPager;
@@ -44,6 +46,7 @@ public class ViewActivity extends BaseActivity {
         }
 
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
+        mViewPager.setOnPageChangeListener(this);
     }
 
     @Override
@@ -57,6 +60,8 @@ public class ViewActivity extends BaseActivity {
         super.onPause();
         getBus().unregister(this);
     }
+
+
 
     @Subscribe
     public void onDatasetChanged(DatasetUpdateEvent event) {
@@ -82,6 +87,24 @@ public class ViewActivity extends BaseActivity {
             return true;
         }
 
-        return false;
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        Log.e("mImageList", mImageList.size() + " " + position);
+        if (mImageList.size() > 0 && mImageList.size() - 1 == position) {
+            Toast.makeText(this, R.string.last_pic_page, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

@@ -41,7 +41,7 @@ public class AlbumRecyclerAdapter extends RecyclerView.Adapter<AlbumRecyclerAdap
         if (position == 0) {
             image.setTitle(mAlbumImage.getTitle());
         }
-        ImageViewInflater.inflate(holder.getView(), image);
+        ImageViewInflater.setViews(holder.getView(), image);
 
     }
 

@@ -2,7 +2,6 @@ package joaorodrigues.mobileimgur.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ public class ImageFragment extends ImgurAbstractFragment {
     private Image mImage;
 
     public static ImageFragment newInstance(Image image) {
+
         ImageFragment fragment = new ImageFragment();
         fragment.setRetainInstance(true);
         fragment.setImage(image);
@@ -34,7 +34,7 @@ public class ImageFragment extends ImgurAbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ImageViewInflater.inflate(inflater, container, mImage);
+        return ImageViewInflater.inflateAndSetViews(inflater, container, mImage);
     }
 
     @Override
