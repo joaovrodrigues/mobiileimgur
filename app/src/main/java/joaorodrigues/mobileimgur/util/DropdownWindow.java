@@ -1,4 +1,4 @@
-package joaorodrigues.mobileimgur.widgets;
+package joaorodrigues.mobileimgur.util;
 
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
@@ -10,6 +10,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import joaorodrigues.mobileimgur.R;
+import joaorodrigues.mobileimgur.widgets.PopupSelectorMenu;
+import joaorodrigues.mobileimgur.widgets.StableRecyclerView;
 
 /**
  * Dropdown window for the main activity.
@@ -217,13 +219,21 @@ public class DropdownWindow
         this.mLayoutType = type;
 
         if (mLayoutType == StableRecyclerView.GRID_LAYOUT) {
+
             mViewHolder.mLinearAdapter.setTextColor(Color.GRAY);
+            mViewHolder.mLinearAdapter.setClickable(false);
             mViewHolder.mStaggeredAdapter.setTextColor(Color.WHITE);
+            mViewHolder.mStaggeredAdapter.setClickable(true);
             mSeekBar.setVisibility(View.VISIBLE);
+
         }else{
+
             mViewHolder.mLinearAdapter.setTextColor(Color.WHITE);
+            mViewHolder.mLinearAdapter.setClickable(true);
             mViewHolder.mStaggeredAdapter.setTextColor(Color.GRAY);
+            mViewHolder.mStaggeredAdapter.setClickable(false);
             mSeekBar.setVisibility(View.GONE);
+
         }
     }
 

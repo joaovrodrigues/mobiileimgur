@@ -62,7 +62,6 @@ public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAda
                 image = image.getAlbum().get(0);
             else {
                 Glide.with(context).load(image.getLink())
-                        .placeholder(R.drawable.ic_loading)
                         .override(300, 300)
                         .into(cardViewHolder.getImageView());
                 return;
@@ -70,7 +69,6 @@ public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAda
         }
 
         Glide.with(context).load(image.getLink())
-                .placeholder(R.drawable.ic_loading)
                 .override(300, 300)
                 .centerCrop()
                 .into(cardViewHolder.getImageView());

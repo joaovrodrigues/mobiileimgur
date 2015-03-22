@@ -1,11 +1,7 @@
 package joaorodrigues.mobileimgur;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +22,7 @@ import joaorodrigues.mobileimgur.controller.ImgurController;
 import joaorodrigues.mobileimgur.events.DatasetUpdateEvent;
 import joaorodrigues.mobileimgur.listeners.RecyclerViewOnScrollListener;
 import joaorodrigues.mobileimgur.model.Image;
-import joaorodrigues.mobileimgur.widgets.DropdownWindow;
+import joaorodrigues.mobileimgur.util.DropdownWindow;
 import joaorodrigues.mobileimgur.widgets.StableRecyclerView;
 import retrofit.RetrofitError;
 
