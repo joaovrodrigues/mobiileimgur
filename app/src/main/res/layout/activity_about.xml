@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <joaorodrigues.mobileimgur.widgets.RoundedImageView
+        android:id="@+id/iv_face"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        custom:borderColor="@android:color/darker_gray"
+        custom:borderWidth="5dp"
+        android:src="@drawable/ic_dev"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:textSize="20sp"
+        android:textColor="@color/green_title"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/iv_face"/>
+
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/iv_face"
+        android:layout_below="@+id/tv_name"/>
+    <TextView
+
+        android:id="@+id/tv_github"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/github"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/iv_face"
+        android:layout_below="@+id/tv_email"/>
+
+    <ImageView
+        android:id="@+id/iv_separator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/iv_face"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tv_features"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/features"
+        android:layout_below="@+id/iv_separator"/>
+
+    <TextView
+        android:id="@+id/tv_messages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/tv_features"
+        android:text="@string/about"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tv_buildtitle"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/build_time_title"
+        android:layout_below="@+id/tv_messages"/>
+
+    <TextView
+        android:id="@+id/tv_buildtime"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/build_time"
+        android:layout_below="@+id/tv_buildtitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tv_note"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/disclaimer"
+        android:layout_below="@+id/tv_buildtime"/>
+
+    <TextView
+        android:id="@+id/tv_disclaimer"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/tested"
+        android:layout_below="@+id/tv_note"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:textColor="@android:color/darker_gray"/>
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="BACK"
+        android:textColor="@android:color/white"
+        android:background="@color/green_transparent"/>
+
+</RelativeLayout>

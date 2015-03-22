@@ -40,7 +40,6 @@ public class ImageFragment extends ImgurAbstractFragment {
 
     @Override
     public void destroy() {
-        Log.e("destroy", "destroy called");
         final ImageView imageView = (ImageView) getView().findViewById(R.id.iv_image);
         Glide.clear(imageView);
     }

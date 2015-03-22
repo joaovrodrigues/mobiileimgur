@@ -22,7 +22,6 @@ import joaorodrigues.mobileimgur.model.Image;
 public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAdapter.CardViewHolder> {
 
     private List<Image> mImageList;
-    private OnGridItemClickListener mListener;
 
     private double mScale;
 
@@ -61,11 +60,17 @@ public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAda
         if (image.isAlbum()) {
             if (image.getAlbum() != null)
                 image = image.getAlbum().get(0);
-            else
+            else {
+                Glide.with(context).load(image.getLink())
+                        .placeholder(R.drawable.ic_loading)
+                        .override(300, 300)
+                        .into(cardViewHolder.getImageView());
                 return;
+            }
         }
 
         Glide.with(context).load(image.getLink())
+                .placeholder(R.drawable.ic_loading)
                 .override(300, 300)
                 .centerCrop()
                 .into(cardViewHolder.getImageView());
@@ -73,9 +78,7 @@ public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAda
         cardViewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onGridItemClicked(i);
-                }
+                notifyItemClicked(i);
             }
         });
     }
@@ -85,9 +88,7 @@ public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAda
         return mImageList.size();
     }
 
-    public void setOnItemClickListener(OnGridItemClickListener listener) {
-        this.mListener = listener;
-    }
+
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
 
@@ -164,11 +165,5 @@ public class GridRecyclerAdapter extends AbstractRecyclerAdapter<GridRecyclerAda
         private int getScaledHeigth() {
             return mTextView.getVisibility() == View.VISIBLE ? (int) ((double) getScaledWidth() * 1.33333) : getScaledWidth();
         }
-    }
-
-    public interface OnGridItemClickListener {
-
-        public void onGridItemClicked(int position);
-
     }
 }

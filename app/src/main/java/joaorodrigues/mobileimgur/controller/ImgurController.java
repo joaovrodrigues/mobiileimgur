@@ -45,6 +45,10 @@ public class ImgurController {
     private String mSort;
     private String mWindow;
     private boolean mShowViral;
+    /**
+     * Apparently there seems to be a bug with the
+     */
+    private boolean mIsWaitingRequest;
     private int mPage;
 
     public static ImgurController getInstance() {
@@ -123,10 +127,12 @@ public class ImgurController {
     }
 
     public void refreshData() {
-        if(mSection.equals(ApiManager.SECTION_TOP)) {
-            mApiManager.getApi().listTopImages(mSort, mWindow, Integer.toString(mPage), new ImageListCallback(mBus));
-        }else {
-            mApiManager.getApi().listImages(mSection, mSort, Integer.toString(mPage), Boolean.toString(mShowViral), new ImageListCallback(mBus));
+        if(!mIsWaitingRequest) {
+            if (mSection.equals(ApiManager.SECTION_TOP)) {
+                mApiManager.getApi().listTopImages(mSort, mWindow, Integer.toString(mPage), new ImageListCallback(mBus));
+            } else {
+                mApiManager.getApi().listImages(mSection, mSort, Integer.toString(mPage), Boolean.toString(mShowViral), new ImageListCallback(mBus));
+            }
         }
     }
 
@@ -155,14 +161,11 @@ public class ImgurController {
             generateAlbumGetList();
             getNextAlbum();
         }
+        mIsWaitingRequest = false;
     }
 
     public void register() {
         mBus.register(this);
-    }
-
-    public void unregister() {
-        mBus.unregister(this);
     }
 
     public List<Image> getCurrentImages() {
@@ -225,7 +228,8 @@ public class ImgurController {
 
     @Subscribe
     public void requestPage(PageRequestEvent event) {
-        loadNextPage();
+        if(!mIsWaitingRequest)
+            loadNextPage();
     }
 
     public void loadNextPage() {

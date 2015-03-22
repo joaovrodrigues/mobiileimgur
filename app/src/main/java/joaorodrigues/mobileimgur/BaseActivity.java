@@ -8,7 +8,7 @@ import joaorodrigues.mobileimgur.interfaces.ApiProvider;
 import joaorodrigues.mobileimgur.interfaces.BusProvider;
 
 /**
- * Created by joao on 13-03-2015.
+ * Base Application activity.
  */
 public class BaseActivity extends FragmentActivity implements BusProvider, ApiProvider {
 

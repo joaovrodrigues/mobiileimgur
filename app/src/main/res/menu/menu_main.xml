@@ -1,10 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item android:id="@+id/btn_refresh"
+          android:title="View"
+          app:showAsAction="always"
+          android:showAsAction="always"
+          android:icon="@drawable/ic_loop_white_24dp"/>
+
     <item android:id="@+id/btn_popupwindow"
           android:title="View"
           app:showAsAction="always"
           android:showAsAction="always"
-          android:icon="@android:drawable/ic_input_get"/>
+          android:icon="@drawable/ic_add_circle_outline"/>
 
+    <item android:id="@+id/btn_dialog"
+          android:title="about"
+          app:showAsAction="never"
+          android:showAsAction="never"/>
 </menu>

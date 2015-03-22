@@ -1,7 +1,10 @@
 package joaorodrigues.mobileimgur;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -9,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
@@ -37,6 +41,7 @@ public class MainActivity extends BaseActivity
     private StableRecyclerView mGridView;
     private AbstractRecyclerAdapter mAdapter;
     private DropdownWindow mDropdownWindow;
+    private TextView mTvError;
 
     private double mScale;
     private int mLayoutType;
@@ -52,8 +57,8 @@ public class MainActivity extends BaseActivity
 
         this.mScale = 1;
         this.mLayoutType = StableRecyclerView.GRID_LAYOUT;
+        this.mTvError = (TextView) findViewById(R.id.tv_error);
 
-        mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
         mGridView = (StableRecyclerView) findViewById(R.id.rv_images);
         mGridView.setLayoutManager(mLayoutType);
         mGridView.setOnScrollListener(new RecyclerViewOnScrollListener(this));
@@ -146,8 +151,17 @@ public class MainActivity extends BaseActivity
                     mDropdownWindow.setSort(mImgurController.getSort());
                     mDropdownWindow.setSection(mImgurController.getSection());
                     mDropdownWindow.setShowViral(mImgurController.isShowViral());
+                    mDropdownWindow.setLayoutType(mLayoutType);
                 }
 
+                break;
+
+            case R.id.btn_refresh:
+                mImgurController.refreshData();
+                break;
+            case R.id.btn_dialog:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -191,6 +205,7 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onImageListReceived(DatasetUpdateEvent event) {
         if (event.getData() != null) {
+            mTvError.setVisibility(View.GONE);
             if (mAdapter == null) {
                 mAdapter = getAdapter(event.getData());
                 mAdapter.setScale(mScale);
@@ -207,13 +222,13 @@ public class MainActivity extends BaseActivity
 
     @Subscribe
     public void onRetrofitError(RetrofitError error) {
+        mTvError.setVisibility(View.VISIBLE);
         Toast.makeText(this, "Error Loading images!\n" +
                 error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProgressChanged(int progress) {
-        Log.e("seekbar", progress + "");
         this.mScale = progress > 19 ? progress / 100d : mScale;
         mGridView.setScale(mScale);
         if (mAdapter != null) {
@@ -241,6 +256,21 @@ public class MainActivity extends BaseActivity
         mImgurController.setShowViral(showViral);
     }
 
+    /**
+     * Sets the layout type between
+     *
+      * @param layoutType
+     */
+    @Override
+    public void onLayoutTypeChanged(int layoutType) {
+        this.mLayoutType = layoutType;
+        final int position = mGridView.getFirstVisiblePosition();
+
+        mAdapter = getAdapter(mImgurController.getData().getData());
+        mGridView.setLayoutManager(StableRecyclerView.STAGGERED_LAYOUT);
+        mGridView.setAdapter(mAdapter);
+        mGridView.scrollToPosition(position);
+    }
 
     /**
      * On grid item interface. When the view is closed we want
@@ -263,7 +293,10 @@ public class MainActivity extends BaseActivity
             adapter.setOnItemClickListener(this);
             return adapter;
         } else {
-            return new StaggeredRecyclerAdapter(data);
+            StaggeredRecyclerAdapter adapter = new StaggeredRecyclerAdapter(data);
+            adapter.setOnItemClickListener(this);
+            adapter.setScale(0.4d);
+            return adapter;
         }
     }
 

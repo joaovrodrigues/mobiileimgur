@@ -25,6 +25,9 @@
 
         <activity android:name=".ViewActivity"
             android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".AboutActivity"
+                  android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

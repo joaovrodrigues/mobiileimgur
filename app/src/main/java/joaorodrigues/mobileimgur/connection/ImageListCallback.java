@@ -14,9 +14,11 @@ import retrofit.client.Response;
  */
 public class ImageListCallback extends ApiCallback<ImageList> {
 
+    private Bus mBus;
 
     public ImageListCallback(Bus bus) {
         super(bus);
+        mBus = bus;
         register();
     }
 
@@ -30,7 +32,7 @@ public class ImageListCallback extends ApiCallback<ImageList> {
 
     @Override
     public void failure(RetrofitError error) {
-        Log.e("ImageList callback error", error.getMessage());
+        this.mBus.post(error);
         unregister();
     }
 

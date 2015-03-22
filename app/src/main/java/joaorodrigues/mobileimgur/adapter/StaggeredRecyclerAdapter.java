@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 
 import java.util.List;
 
@@ -19,13 +20,17 @@ import joaorodrigues.mobileimgur.model.Image;
  * Staggered grid adapter.
  *
  * Currently not finished.
+ *
+ * It still takes a scale variable, but it won"t be functional for now, since the
+ * Layout manager does most of the work.
+ *
+ *
  */
 public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredRecyclerAdapter.ImageViewHolder> {
 
-    private static final int IMAGE_WIDTH = 300;
+    private static final double IMAGE_WIDTH = 300;
 
     private List<Image> mImageList;
-    private double mScale;
 
     public StaggeredRecyclerAdapter(List<Image> data) {
         this.mImageList = data;
@@ -38,8 +43,7 @@ public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredR
 
     @Override
     public void setScale(double scale) {
-        this.mScale = scale;
-    }
+            }
 
     @Override
     public int getItemViewType(int position) {
@@ -51,34 +55,13 @@ public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredR
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.listitem_imagestaggered, parent, false);
 
-        ImageViewHolder viewHolder = new ImageViewHolder(view, parent);
-        viewHolder.setScale(mScale);
-        Image image = mImageList.get(viewType);
-        int width;
-        int height;
-
-        if (image.isAlbum()) {
-            width = image.getCoverWidth();
-            height = image.getCoverHeigth();
-            viewHolder.setResolutionRatio((double)height / (double)width);
-
-        }else{
-            width = image.getHeight();
-            height = image.getWidth();
-            viewHolder.setResolutionRatio((double)height / (double)width);
-        }
-
-        viewHolder.setResolutionRatio((double)height / (double)width);
-
-
-        return viewHolder;
+       return new ImageViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ImageViewHolder holder, int position) {
+    public void onBindViewHolder(ImageViewHolder holder,final int position) {
+        final Context context = holder.getImageView().getContext();
         Image image = mImageList.get(position);
-        Context context = holder.getImageView().getContext();
-        holder.setScale(mScale);
         int width;
         int height;
 
@@ -87,17 +70,29 @@ public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredR
             height = image.getCoverHeigth();
 
             if(image.getAlbum()!= null)
+                //cover image is the first image in the album
                 image = image.getAlbum().get(0);
-            else
+            else {
+                Glide.with(context).load(image.getLink())
+                        .override((int)((double)width*getImageCropRatio(width)), (int)((double)height*getImageCropRatio(width)))
+                        .into(holder.getImageView());
                 return;
+            }
         }else{
             width = image.getHeight();
             height = image.getWidth();
         }
 
-        Glide.with(context).load(image.getLink())
-                .override(300, 300)
-                .centerCrop()
+        holder.getImageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notifyItemClicked(position);
+            }
+        });
+
+        Glide.with(context)
+                .load(image.getLink())
+                .override((int)((double)width*getImageCropRatio(width)), (int)((double)height*getImageCropRatio(width)))
                 .into(holder.getImageView());
     }
 
@@ -114,9 +109,8 @@ public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredR
      * good middle ground between performance and quality. Will be tweaked
      * if necessary.
      */
-
     private double getImageCropRatio(int width) {
-        return IMAGE_WIDTH / width;
+        return IMAGE_WIDTH /(double) width;
     }
 
     private int getCroppedHeight(int width, int height) {
@@ -130,46 +124,15 @@ public class StaggeredRecyclerAdapter extends AbstractRecyclerAdapter<StaggeredR
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mImageView;
-        private ViewGroup mParent;
-        private double mResolutionRatio;
-        private double mScale;
 
-        public ImageViewHolder(View view, ViewGroup parent) {
+        public ImageViewHolder(View view) {
             super(view);
             this.mImageView = (ImageView) view;
-            this.mParent = parent;
-        }
-
-        public void setResolutionRatio(double scaleRatio) {
-            this.mResolutionRatio = scaleRatio;
-            scaleViews();
-        }
-
-        public void setScale(double scale) {
-            this.mScale = scale;
         }
 
         public ImageView getImageView() {
             return this.mImageView;
         }
 
-        private void scaleViews() {
-            int height = (int)(getScaledWidth() * mResolutionRatio);
-            int width = getScaledWidth();
-        }
-
-
-        /**
-         * Since all the layout scrolling will be vertical, the width will be the
-         * main limiting factor.
-         *
-         * @return
-         */
-        private int getScaledWidth() {
-            int parentWidth = mParent.getWidth();
-            int scaledWidth = (int) (parentWidth * mScale);
-            Log.e("parent and scale", mParent.getWidth() + " " + mScale + " " + scaledWidth);
-            return scaledWidth;
-        }
     }
 }

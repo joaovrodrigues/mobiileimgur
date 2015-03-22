@@ -1,6 +1,5 @@
 package joaorodrigues.mobileimgur.util;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ public class ImageViewInflater {
 
 
     public static View inflateAndSetViews(LayoutInflater inflater, ViewGroup container, Image image) {
-        Log.e("inflating", "inflating the viuew");
         View view = inflater.inflate(R.layout.fragment_image, container, false);
         return setViews(view, image);
     }
@@ -50,13 +48,13 @@ public class ImageViewInflater {
         }
 
         if (image.getUps() != 0) {
-            points.setText(Integer.toString(image.getUps()));
+            points.setText("Upvotes: " + Integer.toString(image.getUps()));
         } else {
             points.setVisibility(View.GONE);
         }
 
         if (image.getViews() != 0) {
-            views.setText(Integer.toString(image.getViews()));
+            views.setText("Views: " + Integer.toString(image.getViews()));
         } else {
             views.setVisibility(View.GONE);
         }
@@ -88,12 +86,12 @@ public class ImageViewInflater {
      * Scale down the image to a maximum of pixels defined in get
      * Resize pixel ratio
      *
-     * @param width the original width of the image
+     * @param width  the original width of the image
      * @param height the original height of the image
      * @return the scaled height
      */
     private static int getScaledHeight(int width, int height) {
-        return (int) (height * getResizeRatio(width, height));
+        return (int) ((double) height * getResizeRatio(width, height));
     }
 
 
@@ -101,19 +99,19 @@ public class ImageViewInflater {
      * Scale down the image to a maximum of pixels defined in get
      * Resize pixel ratio
      *
-     * @param width the original width of the image
+     * @param width  the original width of the image
      * @param height the original height of the image
      * @return the scaled height
      */
     private static int getScaledWidth(int width, int height) {
-        return (int) (width * getResizeRatio(width, height));
+        return (int) ((double) width * getResizeRatio(width, height));
     }
 
 
     /**
      * Scale down the image to a maximum of pixels defined in get
      * Resize pixel ratio
-     *
+     * <p/>
      * Note: currently the maximumpixel size for an image is
      * hard coded in this method. Subject to change.
      *

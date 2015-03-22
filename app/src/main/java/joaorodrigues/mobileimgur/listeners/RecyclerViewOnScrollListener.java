@@ -53,7 +53,6 @@ public class RecyclerViewOnScrollListener extends RecyclerView.OnScrollListener 
         //and if he is request more pages
         if (isTheLastMembers(recyclerView)) {
             ((BaseActivity)mMainActivity).getBus().post(new PageRequestEvent());
-            Toast.makeText(mMainActivity, R.string.last_pic_page, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -33,7 +33,6 @@ public class AlbumCallback extends ApiCallback<Album> {
 
     @Override
     public void failure(RetrofitError error) {
-        Log.e("Album get error", error.getMessage());
         unregister();
     }
 }

@@ -33,6 +33,7 @@ public class DropdownWindow
     private String mSort;
     private String mSection;
     private String mWindow;
+    private int mLayoutType;
     private boolean mShowViral;
     private int mProgress;
 
@@ -155,6 +156,19 @@ public class DropdownWindow
                     mApiChangedListener.onViralChanged(mShowViral);
                 }
                 break;
+
+            case R.id.btn_staggered:
+                setLayoutType(StableRecyclerView.STAGGERED_LAYOUT);
+                if (mApiChangedListener != null) {
+                    mApiChangedListener.onLayoutTypeChanged(mLayoutType);
+                }
+                break;
+            case R.id.btn_linear:
+                setLayoutType(StableRecyclerView.GRID_LAYOUT);
+                if (mApiChangedListener != null) {
+                    mApiChangedListener.onLayoutTypeChanged(mLayoutType);
+                }
+                break;
         }
     }
 
@@ -190,16 +204,26 @@ public class DropdownWindow
         this.mViewHolder.mWindowButton.setText( mWindow.toUpperCase());
     }
 
-    public boolean isShowViral() {
-        return mShowViral;
-    }
-
     public void setShowViral(boolean showViral) {
         this.mShowViral = showViral;
         if (mShowViral) {
             this.mViewHolder.mShowViralButton.setTextColor(Color.WHITE);
         } else {
             this.mViewHolder.mShowViralButton.setTextColor(Color.GRAY);
+        }
+    }
+
+    public void setLayoutType(int type) {
+        this.mLayoutType = type;
+
+        if (mLayoutType == StableRecyclerView.GRID_LAYOUT) {
+            mViewHolder.mLinearAdapter.setTextColor(Color.GRAY);
+            mViewHolder.mStaggeredAdapter.setTextColor(Color.WHITE);
+            mSeekBar.setVisibility(View.VISIBLE);
+        }else{
+            mViewHolder.mLinearAdapter.setTextColor(Color.WHITE);
+            mViewHolder.mStaggeredAdapter.setTextColor(Color.GRAY);
+            mSeekBar.setVisibility(View.GONE);
         }
     }
 
@@ -215,6 +239,8 @@ public class DropdownWindow
         public void onWindowChanged(String window);
 
         public void onViralChanged(boolean showViral);
+
+        public void onLayoutTypeChanged(int layoutType);
     }
 
     private class DropdownViewHolder {
@@ -223,12 +249,16 @@ public class DropdownWindow
         private Button mSectionButton;
         private Button mWindowButton;
         private Button mShowViralButton;
+        private Button mStaggeredAdapter;
+        private Button mLinearAdapter;
 
         DropdownViewHolder() {
             this.mSortButton = (Button) mView.findViewById(R.id.btn_sort);
             this.mSectionButton = (Button) mView.findViewById(R.id.btn_section);
             this.mWindowButton = (Button) mView.findViewById(R.id.btn_window);
             this.mShowViralButton = (Button) mView.findViewById(R.id.btn_showviral);
+            this.mStaggeredAdapter = (Button) mView.findViewById(R.id.btn_staggered);
+            this.mLinearAdapter = (Button) mView.findViewById(R.id.btn_linear);
         }
 
         protected void setClickListener(View.OnClickListener listener) {
@@ -236,6 +266,8 @@ public class DropdownWindow
             this.mSectionButton.setOnClickListener(listener);
             this.mSortButton.setOnClickListener(listener);
             this.mShowViralButton.setOnClickListener(listener);
+            this.mStaggeredAdapter.setOnClickListener(listener);
+            this.mLinearAdapter.setOnClickListener(listener);
         }
 
     }

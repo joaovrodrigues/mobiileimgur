@@ -4,6 +4,15 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 tools:context=".MainActivity">
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:textColor="@color/green_title"
+        android:textSize="35sp"
+        android:text="@string/error"/>
 
     <joaorodrigues.mobileimgur.widgets.StableRecyclerView
         android:id="@+id/rv_images"
@@ -16,24 +25,50 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/rl_selectors"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:translationY="-150dp"
+        android:layout_height="200dp"
+        android:translationY="-200dp"
         android:background="@color/green_transparent">
+
+        <LinearLayout
+            android:id="@+id/ll_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp">
+        <Button
+            android:id="@+id/btn_linear"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@null"
+            android:textSize="25sp"
+            android:text="@string/linear"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/btn_staggered"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@null"
+            android:layout_marginLeft="15dp"
+            android:textSize="25sp"
+            android:text="@string/staggered"
+            android:textColor="@android:color/white"/>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_below="@+id/ll_grid"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_section"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_toLeftOf="@+id/btn_sort"
                 android:background="@null"
                 android:textSize="25sp"
                 android:textColor="@android:color/white"/>
@@ -43,7 +78,6 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_centerHorizontal="true"
                 android:background="@null"
                 android:textSize="25sp"
                 android:textColor="@android:color/white"/>
@@ -53,7 +87,6 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_toRightOf="@+id/btn_sort"
                 android:background="@null"
                 android:textSize="25sp"
                 android:textColor="@android:color/white"/>
@@ -63,7 +96,6 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_toRightOf="@+id/btn_window"
                 android:background="@null"
                 android:textSize="25sp"
                 android:textColor="@android:color/white"/>
@@ -74,7 +106,6 @@
             android:id="@+id/sb_scale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btn_dismiss"
             android:layout_marginTop="15dp"
             android:layout_below="@+id/ll_buttons"
             android:max="100"/>
@@ -83,7 +114,7 @@
             android:id="@+id/btn_dismiss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/sb_scale"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="15dp"

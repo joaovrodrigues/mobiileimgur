@@ -4,6 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+
+/**
+ * Needs trimming once the final application takes form.
+ */
 public class Image {
 
     private String id;

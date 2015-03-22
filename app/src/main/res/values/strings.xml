@@ -2,10 +2,24 @@
 <resources>
 
     <string name="last_pic_page">Loading next page!</string>
-    
+    <string name="staggered">Staggered</string>
+    <string name="linear">Linear</string>
+    <string name="error">An error ocurred. \n Please refresh!</string>
+
+    <string name="name">João Rodrigues</string>
+    <string name="email">joaovascor@gmail.com</string>
+    <string name="github">github.com/joaovrodrigues</string>
+
+    <string name="features">About the app:</string>
+    <string name="disclaimer">Note:</string>
+    <string name="tested">Due to the quick nature of the project, it wasn"t possible for me to test the app in any device other than a Samsung Galaxy S4.</string>
+    <string name="build_time_title">Build Time:</string>
+    <string name="build_time">Build time totals around 30 hours of work, done over 1 week.</string>
+
     <string name="app_name">Mobile Imgur</string>
     <string name="client_id">b165ec613fd601a</string>
     <string name="client_secret">a229fe1249e53c5aea8a2f1adf98d5cd2c3d9811</string>
+    <string name="about">Mobile Imgur, features a staggered grid layout and an expandable/collapsible linear grid for the main view. This app also has limited GIF support through Glide.</string>
 
 
     <array name="section">

@@ -47,12 +47,6 @@ public class ViewActivity extends BaseActivity
             throw new IllegalStateException("position has to be defined");
         }
 
-        /**
-         * In this case we cant save the adapter - which would be optimal -
-         * since it makes use of the SuportFragmentManager which is bound
-         * to the destroyed activity. Hence we will be saving the ImageList
-         * and the position of the mViewPager.
-         */
         mImageList = (List<Image>) getLastCustomNonConfigurationInstance();
 
         mViewPager = (ViewPager) findViewById(R.id.vp_content);

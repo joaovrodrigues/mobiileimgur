@@ -40,31 +40,42 @@ public class StableRecyclerView extends RecyclerView {
     public void setLayoutManager(int layoutManagerCode) {
         this.mLayoutType = layoutManagerCode;
         switch (layoutManagerCode) {
+
             case (GRID_LAYOUT):
-                GridLayoutManager layoutManager = new GridLayoutManager(getContext(), getRows());
+
+                final GridLayoutManager layoutManager =
+                        new GridLayoutManager(getContext(), getRows());
                 setLayoutManager(layoutManager);
+
                 break;
             case (STAGGERED_LAYOUT):
-                StaggeredGridLayoutManager stagLayoutManager =
-                        new StaggeredGridLayoutManager(getRows(), StaggeredGridLayoutManager.VERTICAL);
+
+                final StaggeredGridLayoutManager stagLayoutManager =
+                        new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
                 setLayoutManager(stagLayoutManager);
+
                 break;
         }
     }
 
     public int getFirstVisiblePosition() {
+
         if (getLayoutManager() instanceof GridLayoutManager) {
-            GridLayoutManager manager = (GridLayoutManager)getLayoutManager();
-            return manager.findFirstCompletelyVisibleItemPosition();
-        }else{
-            StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) getLayoutManager();
-            int[] positions = {};
-            return manager.findFirstCompletelyVisibleItemPositions(positions)[0];
+            GridLayoutManager manager
+                    = (GridLayoutManager) getLayoutManager();
+            return manager
+                    .findFirstCompletelyVisibleItemPosition();
+        } else {
+            StaggeredGridLayoutManager manager
+                    = (StaggeredGridLayoutManager) getLayoutManager();
+            int[] positions = new int[getAdapter().getItemCount()];
+            int[] layoutPos = manager.findFirstCompletelyVisibleItemPositions(positions);
+            return layoutPos.length > 0 ? 0 : layoutPos[layoutPos.length - 1];
         }
     }
 
     public int getRows() {
-        return (int)(1/mScale) < 5 ? (int)(1/mScale):5;
+        return (int) (1 / mScale) < 5 ? (int) (1 / mScale) : 5;
     }
 
     public int getLayoutType() {
@@ -73,7 +84,7 @@ public class StableRecyclerView extends RecyclerView {
 
     @Override
     public void stopScroll() {
-        if(getLayoutManager() != null) {
+        if (getLayoutManager() != null) {
             super.stopScroll();
         }
     }
